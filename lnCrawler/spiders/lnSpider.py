@@ -5,11 +5,14 @@ class lnSpider(scrapy.Spider):
     allowded_domains = ['loopnet.com']
     start_urls = []
     f = open("urls.txt","r")
-    urlList = f.readlines()
+    urlList = f.read().splitlines()
     for url in urlList:
         start_urls.append(url)
 
     def parse(self, response):
-        for table in response.xpath('//table[@class="property-data"]').extract_first():
-            yield{'table':table}
+        i = 0
+        for item in response.xpath('//table[@class="property-data"]'):
+            if i == 0:
+                yield {'item': item.xpath('.//td/text()').extract()}
+            i += 1
         pass
